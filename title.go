@@ -19,6 +19,7 @@ type Title struct {
 	Type          string   `json:",omitempty"`
 	Year          int      `json:",omitempty"`
 	Rating        string   `json:",omitempty"`
+	Votes         int      `json:",omitempty"`
 	Duration      string   `json:",omitempty"`
 	Directors     []Name   `json:",omitempty"`
 	Writers       []Name   `json:",omitempty"`
@@ -122,6 +123,7 @@ var (
 	titleProdYearRE      = regexp.MustCompile(`property=.og:title. content="[^(]+ \(.*?([0-9]{4}).*?\)" />`)
 	titlePubYearRE       = regexp.MustCompile(`itemprop="datePublished" content="([0-9]{4})`)
 	titleRatingRE        = regexp.MustCompile(`itemprop="ratingValue">([0-9.]+)</span>`)
+	titleVoteCountRE     = regexp.MustCompile(`<span class="small" itemprop="ratingCount">(\d+)</span></a>`)
 	titleDurationRE      = regexp.MustCompile(`itemprop="duration" datetime="(?:PT)?([0-9HM]+)"`)
 	titlePersonRE        = regexp.MustCompile(`(?s)<a href="/name/(nm\d+).*?itemprop="name">([^<]+)`)
 	titleDirectorsRE     = regexp.MustCompile(`(?s)itemprop="director" itemscope itemtype="http://schema.org/Person">(.*?)</div>`)
@@ -133,7 +135,7 @@ var (
 	titleLanguageRE      = regexp.MustCompile(`itemprop=.url.>([^<]+)</a>`)
 	titleNationalitiesRE = regexp.MustCompile(`href="/search/title\?country_of_origin[^"]+"[^>]+>([^<]+)`)
 	titleDescriptionRE   = regexp.MustCompile(`<meta property="og:description" content="(?:(?:Created|Directed) by .*?\w\w\.\s*)*(?:With .*?\w\w\.\s*)?([^"]*)`)
-	titlePosterRE        = regexp.MustCompile(`(?s)href="/title/tt\d+/mediaviewer/(rm\d+).*?src="([^"]+)"\s*itemprop="image"`)
+	titlePosterRE        = regexp.MustCompile(`(?s)href="/title/tt\d+/mediaviewer/(rm\d+).*?src="([^@]+)"\s*itemprop="image"`)
 )
 
 // Parse parses a Title from its page.
@@ -175,6 +177,12 @@ func (t *Title) Parse(page []byte) error {
 	s = titleRatingRE.FindSubmatch(page)
 	if s != nil {
 		t.Rating = string(s[1])
+	}
+
+	// Rating
+	s = titleVoteCountRE.FindSubmatch(page)
+	if s != nil {
+		t.Votes, _ = strconv.Atoi(string(s[1]))
 	}
 
 	// Duration
@@ -303,7 +311,7 @@ func (t *Title) Parse(page []byte) error {
 			ID:         id,
 			TitleID:    t.ID,
 			URL:        fmt.Sprintf(mediaURL, t.ID, id),
-			ContentURL: string(s[2]),
+			ContentURL: string(s[2]) + ".jpg",
 		}
 	}
 
