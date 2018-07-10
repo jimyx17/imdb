@@ -135,7 +135,7 @@ var (
 	titleLanguageRE      = regexp.MustCompile(`itemprop=.url.>([^<]+)</a>`)
 	titleNationalitiesRE = regexp.MustCompile(`href="/search/title\?country_of_origin[^"]+"[^>]+>([^<]+)`)
 	titleDescriptionRE   = regexp.MustCompile(`<meta property="og:description" content="(?:(?:Created|Directed) by .*?\w\w\.\s*)*(?:With .*?\w\w\.\s*)?([^"]*)`)
-	titlePosterRE        = regexp.MustCompile(`(?s)href="/title/tt\d+/mediaviewer/(rm\d+).*?src="([^@]+)"\s*itemprop="image"`)
+	titlePosterRE        = regexp.MustCompile(`(?s)href="/title/tt\d+/mediaviewer/(rm\d+).*?src="([^@]+)[^"]+"\s*itemprop="image"`)
 )
 
 // Parse parses a Title from its page.
@@ -311,7 +311,7 @@ func (t *Title) Parse(page []byte) error {
 			ID:         id,
 			TitleID:    t.ID,
 			URL:        fmt.Sprintf(mediaURL, t.ID, id),
-			ContentURL: string(s[2]) + ".jpg",
+			ContentURL: string(s[2]) + "@@.jpg",
 		}
 	}
 
