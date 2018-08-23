@@ -1,6 +1,9 @@
 package imdb
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestTitle(t *testing.T) {
 	_, err := NewTitle(client, "wrong")
@@ -363,4 +366,12 @@ func TestTitle(t *testing.T) {
 			}
 		}
 	}
+}
+
+func TestSingleTitle(t *testing.T) {
+	g, err := NewTitle(client, "tt0058453")
+	if err != nil {
+		t.Fatalf("ERROR: %v", err)
+	}
+	fmt.Printf("DATA: %+v", g)
 }

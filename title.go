@@ -140,6 +140,7 @@ var (
 
 // Parse parses a Title from its page.
 func (t *Title) Parse(page []byte) error {
+	fmt.Print(string(page))
 	// ID, URL
 	s := titleIDRE.FindSubmatch(page)
 	if s == nil {
@@ -271,9 +272,6 @@ func (t *Title) Parse(page []byte) error {
 	s = titleLanguagesRE.FindSubmatch(page)
 	if s != nil {
 		s := titleLanguageRE.FindAllSubmatch(s[1], -1)
-		if s == nil {
-			return NewErrParse("languages")
-		}
 		t.Languages = nil
 		for _, m := range s {
 			genre := decode(string(m[1]))
