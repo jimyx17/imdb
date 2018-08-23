@@ -62,7 +62,7 @@ func NewName(c *http.Client, id string) (*Name, error) {
 var (
 	nameIDRE       = regexp.MustCompile(`<link rel="canonical" href="https://www.imdb.com/name/(nm\d+)/"`)
 	nameFullNameRE = regexp.MustCompile(`<meta property='og:title' content="(.*?)"`)
-	profileRE      = regexp.MustCompile(`<meta property='og:image' content="([\w\.\/\:\-]+@@).*.jpg"`)
+	profileRE      = regexp.MustCompile(`<meta property='og:image' content="([^@]+@).*.jpg"`)
 	bioRE          = regexp.MustCompile(`<h4 class="li_group">Mini Bio \(\d\)</h4>\n +<div [^>]+>\n +<p>\n +(.*)\n +</p>`)
 	birthRE        = regexp.MustCompile(`(?s) +<div id="name-born-info" class="txt-block">\n.*<time datetime="([\d-]+)">\n`)
 	tagsRE         = regexp.MustCompile(`(<[^>]+>)`)
